@@ -39,9 +39,13 @@ jobs:
       - name: Build debug APK
         working-directory: android
         run: gradle assembleDebug
+      - name: Package APK as ZIP
+        run: |
+          cd android/app/build/outputs/apk/debug
+          zip -j Keyveni-Android.zip app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: Keyveni-Android-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: Keyveni-Android-ZIP
+          path: android/app/build/outputs/apk/debug/Keyveni-Android.zip
           if-no-files-found: error
           retention-days: 30
