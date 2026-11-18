@@ -41,7 +41,7 @@ function openModal(id){$('#'+id).classList.add('open')}function closeModal(id){$
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
 document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
 async function loadMenu(){
- const [c,p]=await Promise.all([db.from('keyveni_menu_categories').select('*').eq('is_active',true).order('sort_order'),db.from('keyveni_menu_products').select('*').eq('is_available',true).order('sort_order').order('name')]);
+ const [c,p]=await Promise.all([db.from('keyveni_menu_categories').select('*').eq('is_active',true).order('sort_order'),(()=>{let q=db.from('keyveni_menu_products').select('*');if(!state.admin)q=q.eq('is_available',true);return q.order('sort_order').order('name')})()]);
  if(c.error||p.error){$('#productGrid').innerHTML='<div class="empty">Menü şu anda yüklenemiyor. Lütfen biraz sonra tekrar deneyin.</div>';console.error(c.error,p.error);return}
  state.categories=c.data||[];state.products=p.data||[];if(state.active!=='all'&&!state.categories.some(x=>x.slug===state.active))state.active='all';renderCategories();renderProducts();
 }
