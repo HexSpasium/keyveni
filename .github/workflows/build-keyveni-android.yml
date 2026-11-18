@@ -26,6 +26,7 @@ jobs:
           gradle-version: "8.9"
       - name: Generate Android launcher icons from original logo
         run: |
+          python -m pip install --quiet pillow
           python - <<'PY'
           import base64, io, os
           from PIL import Image
