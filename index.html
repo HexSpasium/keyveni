@@ -60,7 +60,7 @@ function openManage(){const rows=state.products.map(p=>{const c=state.categories
 $('#openLogin').addEventListener('click',()=>state.admin?openManage():openModal('loginModal'));
 $('#loginForm').addEventListener('submit',async e=>{e.preventDefault();$('#loginError').textContent='';const {data,error}=await db.auth.signInWithPassword({email:$('#loginEmail').value.trim(),password:$('#loginPassword').value});if(error){$('#loginError').textContent='Giriş yapılamadı. E-posta ve şifrenizi kontrol edin.';return}if(!await verifyAdmin(data.user)){await db.auth.signOut();$('#loginError').textContent='Bu hesap Keyveni yönetim yetkisine sahip değil.';return}state.user=data.user;setAdmin(true);closeModal('loginModal');toast('Yönetici girişi başarılı.')});
 $('#logout').addEventListener('click',async()=>{await db.auth.signOut();state.user=null;setAdmin(false);toast('Güvenli çıkış yapıldı.')});
-db.auth.onAuthStateChange(async(event,session)=>{if(event==='SIGNED_OUT'){state.user=null;setAdmin(false)}else if(session?.user){state.user=session.user;setAdmin(await verifyAdmin(session.user))}});
+db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){state.user=null;setAdmin(false)}else if(session?.user){state.user=session.user;Promise.resolve().then(async()=>setAdmin(await verifyAdmin(session.user)))}});
 const {data:{session}}=await db.auth.getSession();if(session?.user){state.user=session.user;setAdmin(await verifyAdmin(session.user))}
 $('#manageProducts').addEventListener('click',openManage);
 function fillCategories(selected){$('#productCategory').innerHTML=state.categories.map(c=>'<option value="'+c.id+'" '+(c.id===selected?'selected':'')+'>'+esc(c.name)+'</option>').join('')}
