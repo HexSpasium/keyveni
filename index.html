@@ -110,7 +110,7 @@ $('#startCheckout').addEventListener('click',()=>{if(!cartCount()){toast('Önce 
 $('#checkoutStep').addEventListener('click',e=>{
  if(e.target.id==='checkoutBack'){checkoutView(Math.max(1,checkoutStep-1));return}
  if(e.target.id==='checkoutNext'){
-  if(checkoutStep===1){const name=$('#customerName').value.trim(),phone=$('#customerPhone').value.trim();if(name.length<3){$('#checkoutError').textContent='Lütfen ad ve soyadınızı girin.';return}if(!validatePhone(phone)){$('#checkoutError').textContent='Geçerli bir iletişim numarası girin.';return}state.customer.name=name;state.customer.phone=phone;checkoutView(2)}
+  if(checkoutStep===1){const name=$('#customerName').value.trim(),phone=$('#customerPhone').value.trim();if(name.length<3){$('#checkoutError').textContent='Lütfen ad ve soyadınızı girin.';return}if(!validatePhone(phone)){$('#checkoutError').textContent='Geçerli bir iletişim numarası girin.';return}state.customer.name=name;state.customer.phone=phone;checkoutView(state.mode==='delivery'?2:3)}
   else if(checkoutStep===2){if(state.mode==='delivery'){const address=$('#customerAddress').value.trim();if(address.length<10){$('#checkoutError').textContent='Lütfen açık teslimat adresinizi yazın.';return}state.customer.address=address;}checkoutView(3)}
   else if(checkoutStep===3){state.customer.payment=$('input[name="paymentChoice"]:checked')?.value||'Kapıda nakit';checkoutView(4)}
   return;
