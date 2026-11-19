@@ -16,7 +16,21 @@
  .staff-orders-list{display:grid;gap:12px;margin-top:14px}.staff-order{border:1px solid var(--line);border-radius:13px;padding:14px;background:rgba(215,183,119,.035)}.staff-order-head,.staff-order-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.staff-order-head strong{font:500 19px 'Playfair Display',serif;color:var(--gold2)}.staff-order-head span,.staff-order-meta{font-size:10px;color:var(--muted)}.staff-order-items{margin:12px 0;display:grid;gap:6px;font-size:12px}.staff-order-items>div{display:flex;justify-content:space-between;gap:10px}.staff-order-foot{border-top:1px solid var(--line);padding-top:10px}.staff-order-foot>div{display:flex;gap:7px}.staff-order-foot select{background:#10251a;color:var(--cream);border:1px solid var(--line);border-radius:8px;padding:7px}.staff-order-foot button{font-size:10px}
 </style></head>
 <body>
-<div class="mode-gate" id="modeGate"><div class="mode-panel"><span class="brand-word">keyveni</span><div class="brand-sub">Ev lezzetleri · Mersin</div><h1>Sofranız nerede kuruluyor?</h1><p>Size uygun menüyü seçin. Her hizmet türünün fiyatları ayrı hesaplanır.</p><div class="mode-options"><button class="mode-option" data-mode="dine_in"><span class="symbol">🍽️</span><strong>Masada Menü</strong><small>İşletmede tüketim için özel fiyatlar</small></button><button class="mode-option" data-mode="delivery"><span class="symbol">🛵</span><strong>Eve Sipariş Menü</strong><small>Adrese teslim sipariş fiyatları</small></button></div></div></div>
+<div class="mode-gate" id="modeGate"><div class="mode-panel"><span class="brand-word">keyveni</span><div class="brand-sub">Ev lezzetleri · Mersin</div><h1>Sofranız nerede kuruluyor?</h1><p>Size uygun menüyü seçin. Her hizmet türünün fiyatları ayrı hesaplanır.</p><div class="mode-options"><button type="button" class="mode-option" data-mode="dine_in" onclick="window.keyveniChooseModeFallback && window.keyveniChooseModeFallback('dine_in')"><span class="symbol">🍽️</span><strong>Masada Menü</strong><small>İşletmede tüketim için özel fiyatlar</small></button><button type="button" class="mode-option" data-mode="delivery" onclick="window.keyveniChooseModeFallback && window.keyveniChooseModeFallback('delivery')"><span class="symbol">🛵</span><strong>Eve Sipariş Menü</strong><small>Adrese teslim sipariş fiyatları</small></button></div></div></div>
+<script>
+window.keyveniChooseModeFallback=function(mode){
+ if(mode!=='dine_in'&&mode!=='delivery')return;
+ const gate=document.getElementById('modeGate');
+ if(gate)gate.hidden=true;
+ document.body.dataset.keyveniMode=mode;
+ const status=document.getElementById('modeStatus');
+ if(status)status.textContent=mode==='dine_in'?'Masada Menü':'Eve Sipariş Menü';
+ const title=document.getElementById('modeBannerTitle');
+ if(title)title.textContent=mode==='dine_in'?'Masada Menü · İşletmede tüketim':'Eve Sipariş Menü · Adrese teslim';
+ const desc=document.getElementById('modeBannerDesc');
+ if(desc)desc.textContent=mode==='dine_in'?'Masa bilgilerinizi girerek sipariş oluşturabilirsiniz.':'Adrese teslim siparişinizi oluşturabilirsiniz.';
+};
+</script>
 <div class="shell"><header class="topbar"><a class="brand" href="#"><img src="./assets/icon.svg" alt=""><span><span class="brand-word">keyveni</span><span class="brand-sub">Ev lezzetleri · Mersin</span></span></a><div class="top-actions"><span class="status" id="modeStatus">Menü seçilmedi</span><button class="mode-switch" id="changeMode">Menüyü değiştir</button><button class="cart-trigger" id="openCart">Sepet <span id="cartCount">0</span></button><button class="admin-trigger" id="staffTrigger" hidden>Garson Paneli</button><button class="admin-trigger" id="openLogin">Personel Girişi ↗</button></div></header></div>
 <div class="admin-bar" id="staffBar"><div class="shell admin-inner"><span class="admin-label">GARSON EKRANI · Yetkili personel</span><div class="admin-tools"><button class="ghost-btn" id="openStaffOrders">Masa Siparişleri</button></div></div></div>
 <div class="admin-bar" id="adminBar"><div class="shell admin-inner"><span class="admin-label">YÖNETİM MODU · Menü içerikleri çevrimiçi düzenleniyor</span><div class="admin-tools"><button class="ghost-btn" id="manageProducts">Ürünleri Yönet</button><button class="ghost-btn" id="addProduct">+ Yeni Ürün</button><button class="ghost-btn" id="logout">Çıkış Yap</button></div></div></div>
@@ -37,8 +51,9 @@
 <div class="modal-backdrop" id="checkoutModal"><div class="modal"><div class="modal-head"><h3 id="checkoutTitle">Sipariş bilgileri</h3><button class="close" data-close="checkoutModal">×</button></div><div id="checkoutStep"></div></div></div>
 <div class="modal-backdrop image-lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="Ürün görseli"><div class="lightbox-inner"><button class="close lightbox-close" id="closeLightbox" aria-label="Görseli kapat">×</button><img id="lightboxImage" alt=""><div id="lightboxCaption" class="lightbox-caption"></div></div></div>
 <div class="toast" id="toast"></div>
-<script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.119.0';
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const { createClient } = window.supabase;
 const SUPABASE_URL='https://oxvftybytcwpdcqygxpp.supabase.co';
 const SUPABASE_KEY='sb_publishable_acZH00xxykLW9aPQzd2CxA_mt-UoTvR';
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
