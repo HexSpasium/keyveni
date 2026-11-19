@@ -117,9 +117,9 @@ $('#checkoutStep').addEventListener('click',e=>{
  }
  if(e.target.id==='confirmWhatsApp'){
   const c=state.customer,items=cartItems();if(!items.length){toast('Sepetiniz boş.');closeModal('checkoutModal');return}
-  const lines=items.map(({product:p,qty})=>'• '+qty+' x '+p.name+' — '+(p.price==null?'Fiyat teyidi':money(p.price*qty))).join('\n');
+  const lines=items.map(({product:p,variant,price,qty})=>'• '+qty+' x '+p.name+(variant?' ('+variant.name+')':'')+' — '+(price==null?'Fiyat teyidi':money(price*qty))).join('\n');
   const total=hasUnpriced()?'Fiyat teyidi gerekli':money(cartTotal());
-  const message=['*KEYVENİ — YENİ SİPARİŞ*','*Hizmet türü:* '+(state.mode==='dine_in'?'Masada Menü':'Eve Sipariş Menü'),'', '*Müşteri:* '+c.name,'*Telefon:* '+c.phone,'*Teslimat adresi:* '+c.address,'*Ödeme:* '+c.payment,'','*Ürünler:*',lines,'','*Ara toplam:* '+total,'','Siparişimi onaylıyorum.'].join('\n');
+  const message=['*KEYVENİ — YENİ SİPARİŞ*','*Hizmet türü:* '+(state.mode==='dine_in'?'Masada Menü':'Eve Sipariş Menü'),'', '*Müşteri:* '+c.name,'*Telefon:* '+c.phone,...(state.mode==='delivery'?['*Teslimat adresi:* '+c.address]:[]),'*Ödeme:* '+c.payment,'','*Ürünler:*',lines,'','*Ara toplam:* '+total,'','Siparişimi onaylıyorum.'].join('\n');
   const url='https://wa.me/'+OWNER_WHATSAPP+'?text='+encodeURIComponent(message);
   window.open(url,'_blank','noopener,noreferrer');
   toast('WhatsApp sipariş mesajı hazırlandı. Gönder tuşuna basmayı unutmayın.');
