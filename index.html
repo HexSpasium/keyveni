@@ -135,7 +135,7 @@ function selectMode(mode){if(!['dine_in','delivery'].includes(mode))return;state
 document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>selectMode(b.dataset.mode)));$('#changeMode').addEventListener('click',()=>{$('#modeGate').hidden=false});
 function validatePhone(phone){const digits=phone.replace(/\D/g,'');return digits.length>=10&&digits.length<=13}
 $('#startCheckout').addEventListener('click',()=>{if(!cartCount()){toast('Önce sepete ürün ekleyin.');return}if(state.mode==='dine_in'&&!state.tableNo){closeModal('cartModal');openModal('tableSetupModal');toast('Sipariş için masa ve kişi sayısını seçin.');return}closeModal('cartModal');checkoutView(state.mode==='dine_in'?3:1);openModal('checkoutModal')});
-$('#checkoutStep').addEventListener('click',e=>{
+$('#checkoutStep').addEventListener('click',async e=>{
  if(e.target.id==='checkoutBack'){checkoutView(Math.max(1,checkoutStep-1));return}
  if(e.target.id==='checkoutNext'){
   if(checkoutStep===1){const name=$('#customerName').value.trim(),phone=$('#customerPhone').value.trim();if(name.length<3){$('#checkoutError').textContent='Lütfen ad ve soyadınızı girin.';return}if(!validatePhone(phone)){$('#checkoutError').textContent='Geçerli bir iletişim numarası girin.';return}state.customer.name=name;state.customer.phone=phone;checkoutView(state.mode==='delivery'?2:3)}
