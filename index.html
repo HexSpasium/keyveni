@@ -51,7 +51,7 @@ window.keyveniChooseModeFallback=function(mode){
 <div class="modal-backdrop" id="checkoutModal"><div class="modal"><div class="modal-head"><h3 id="checkoutTitle">Sipariş bilgileri</h3><button class="close" data-close="checkoutModal">×</button></div><div id="checkoutStep"></div></div></div>
 <div class="modal-backdrop image-lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="Ürün görseli"><div class="lightbox-inner"><button class="close lightbox-close" id="closeLightbox" aria-label="Görseli kapat">×</button><img id="lightboxImage" alt=""><div id="lightboxCaption" class="lightbox-caption"></div></div></div>
 <div class="toast" id="toast"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js'"></script>
 <script>
 const { createClient } = window.supabase;
 const SUPABASE_URL='https://oxvftybytcwpdcqygxpp.supabase.co';
